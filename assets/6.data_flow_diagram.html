@@ -1,0 +1,230 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Flow Diagram</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .dfd-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+      text-align: center;
+    }
+    .dfd-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333333;
+      margin-bottom: 20px;
+    }
+    .dfd-wrapper {
+      position: relative;
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    svg {
+      width: 100%;
+      height: 650px;
+      border: none;
+    }
+    .label {
+      font-size: 14px;
+      fill: #333333;
+      pointer-events: none;
+      text-anchor: middle;
+    }
+    .timestamp {
+      font-size: 12px;
+      fill: #666666;
+      text-anchor: middle;
+    }
+    .arrow {
+      stroke-width: 3;
+      fill: none;
+    }
+    .legend {
+      margin-top: 20px;
+      text-align: center;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .legend.active {
+      max-height: 200px;
+    }
+    .legend-toggle {
+      cursor: pointer;
+      color: #007BFF;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .legend-items {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .legend-symbol {
+      width: 20px;
+      height: 20px;
+      border: 2px solid;
+      border-radius: 4px;
+    }
+    @media (max-width: 768px) {
+      .dfd-container {
+        padding: 10px;
+      }
+      svg {
+        height: 550px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dfd-container" role="region" aria-label="Data Flow Diagram for Payment Processing">
+    <h2 class="dfd-title">Data Flow Diagram - Payment Processing</h2>
+    <div class="dfd-wrapper">
+      <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid meet">
+        <!-- Arrowhead marker definition -->
+        <defs>
+          <marker id="arrowhead" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+            <polygon points="0 0, 12 4, 0 8" fill="#007BFF" />
+          </marker>
+          <marker id="arrowhead-red" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+            <polygon points="0 0, 12 4, 0 8" fill="#dc3545" />
+          </marker>
+          <marker id="arrowhead-green" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+            <polygon points="0 0, 12 4, 0 8" fill="#28a745" />
+          </marker>
+        </defs>
+
+        <!-- External Entity: User - Blue color -->
+        <rect x="50" y="150" width="200" height="90" rx="10" ry="10" 
+              fill="#d4edff" stroke="#007BFF" stroke-width="3"/>
+        <text x="150" y="190" class="label">User</text>
+        <text x="150" y="210" class="timestamp">04:51 PM, Jul 14, 2025</text>
+
+        <!-- Process: Authenticate Payment - Yellow color -->
+        <rect x="400" y="150" width="240" height="90" rx="10" ry="10" 
+              fill="#fff3cd" stroke="#ffc107" stroke-width="3"/>
+        <text x="520" y="195" class="label">Authenticate Payment</text>
+
+        <!-- Process: Process Transaction - Yellow color -->
+        <rect x="400" y="320" width="240" height="90" rx="10" ry="10" 
+              fill="#fff3cd" stroke="#ffc107" stroke-width="3"/>
+        <text x="520" y="365" class="label">Process Transaction</text>
+
+        <!-- Process: Update Ledger - Yellow color -->
+        <rect x="400" y="490" width="240" height="90" rx="10" ry="10" 
+              fill="#fff3cd" stroke="#ffc107" stroke-width="3"/>
+        <text x="520" y="535" class="label">Update Ledger</text>
+
+        <!-- Data Store: Transaction Records - Green color -->
+        <rect x="800" y="320" width="220" height="90" rx="10" ry="10" 
+              fill="#d4edda" stroke="#28a745" stroke-width="3"/>
+        <text x="910" y="365" class="label">Transaction Records</text>
+
+        <!-- Data Flows -->
+        <path d="M250 195 Q350 195 400 195" class="arrow" stroke="#007BFF" 
+              marker-end="url(#arrowhead)"/>
+        <text x="325" y="175" class="label">Payment Request</text>
+
+        <path d="M640 195 Q700 195 700 320" class="arrow" stroke="#28a745" 
+              marker-end="url(#arrowhead-green)"/>
+        <text x="670" y="260" class="label">Auth Confirmation</text>
+
+        <path d="M640 365 Q750 365 800 365" class="arrow" stroke="#007BFF" 
+              marker-end="url(#arrowhead)"/>
+        <text x="720" y="350" class="label">Transaction Data</text>
+
+        <path d="M640 535 Q750 535 910 535 Q910 410 910 410" class="arrow" stroke="#dc3545" 
+              marker-end="url(#arrowhead-red)"/>
+        <text x="775" y="520" class="label">Ledger Update</text>
+
+        <path d="M1020 365 Q900 365 640 365" class="arrow" stroke="#28a745" 
+              marker-end="url(#arrowhead-green)"/>
+        <text x="830" y="350" class="label">Record Confirmation</text>
+      </svg>
+    </div>
+    <div class="legend-toggle" onclick="toggleLegend()" role="button" aria-expanded="false" aria-controls="legend">
+      <i class="fas fa-info-circle"></i> Show Legend
+    </div>
+    <div id="legend" class="legend">
+      <div class="legend-items">
+        <div class="legend-item">
+          <div class="legend-symbol" style="background-color: #d4edff; border-color: #007BFF;"></div>
+          <span>Entity (e.g., User)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-symbol" style="background-color: #fff3cd; border-color: #ffc107;"></div>
+          <span>Process (e.g., Authenticate)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-symbol" style="background-color: #d4edda; border-color: #28a745;"></div>
+          <span>Data Store (e.g., Records)</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleLegend() {
+        const legend = document.getElementById('legend');
+        const toggle = document.querySelector('.legend-toggle');
+        const isExpanded = legend.classList.toggle('active');
+        toggle.setAttribute('aria-expanded', isExpanded);
+        toggle.innerHTML = isExpanded 
+          ? '<i class="fas fa-info-circle"></i> Hide Legend' 
+          : '<i class="fas fa-info-circle"></i> Show Legend';
+      }
+    </script>
+  </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html>
+<head>
+  <title>Accessibility UI Wireframe</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .container { max-width: 600px; margin: auto; }
+    nav { background-color: #333; padding: 10px; }
+    nav a { color: white; margin: 0 10px; text-decoration: none; }
+    nav a:focus { outline: 2px solid #fff; }
+    main { padding: 20px; }
+    h1 { font-size: 24px; }
+    .form-group { margin: 10px 0; }
+    label { font-size: 16px; }
+    input { font-size: 16px; padding: 5px; }
+    input:focus { outline: 2px solid #36A2EB; }
+    .button { background-color: #36A2EB; color: white; padding: 10px; font-size: 16px; border: none; cursor: pointer; }
+    .button:focus { outline: 2px solid #fff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav role="navigation" aria-label="Main navigation">
+      <a href="#" aria-label="Home page">Home</a>
+      <a href="#" aria-label="Dashboard page">Dashboard</a>
+      <a href="#" aria-label="Settings page">Settings</a>
+    </nav>
+    <main role="main">
+      <h1 id="content-title">Payment Form</h1>
+      <form role="form">
+        <div class="form-group">
+          <label for="amount">Tip Amount</label>
+          <input type="number" id="amount" aria-required="true" />
+        </div>
+        <button class="button" aria-label="Submit payment">Pay Now</button>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

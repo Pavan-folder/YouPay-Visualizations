@@ -1,0 +1,101 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Engagement Diagram</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f9f9f9;
+    }
+    svg {
+      margin: 20px auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>User Engagement Flow</h1>
+
+  <svg width="700" height="200" role="img" aria-label="User engagement process: Onboarding to Tipping">
+    <defs>
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 Z" fill="black" />
+      </marker>
+    </defs>
+
+    <!-- Step 1: Onboarding -->
+    <rect x="20" y="60" width="120" height="50" fill="#36A2EB" rx="10" />
+    <text x="80" y="90" fill="white" text-anchor="middle" alignment-baseline="middle" font-size="14">
+      Onboarding
+    </text>
+
+    <!-- Arrow 1 -->
+    <line x1="140" y1="85" x2="170" y2="85" stroke="black" stroke-width="2" marker-end="url(#arrow)" />
+
+    <!-- Step 2: Content Discovery -->
+    <rect x="170" y="60" width="140" height="50" fill="#FF6384" rx="10" />
+    <text x="240" y="90" fill="white" text-anchor="middle" alignment-baseline="middle" font-size="14">
+      Content Discovery
+    </text>
+
+    <!-- Arrow 2 -->
+    <line x1="310" y1="85" x2="340" y2="85" stroke="black" stroke-width="2" marker-end="url(#arrow)" />
+
+    <!-- Step 3: Interaction -->
+    <rect x="340" y="60" width="120" height="50" fill="#FFCE56" rx="10" />
+    <text x="400" y="90" fill="white" text-anchor="middle" alignment-baseline="middle" font-size="14">
+      Interaction
+    </text>
+
+    <!-- Arrow 3 -->
+    <line x1="460" y1="85" x2="490" y2="85" stroke="black" stroke-width="2" marker-end="url(#arrow)" />
+
+    <!-- Step 4: Tipping -->
+    <rect x="490" y="60" width="120" height="50" fill="#4BC0C0" rx="10" />
+    <text x="550" y="90" fill="white" text-anchor="middle" alignment-baseline="middle" font-size="14">
+      Tipping
+    </text>
+  </svg>
+</body>
+</html>

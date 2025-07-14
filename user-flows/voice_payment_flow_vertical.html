@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Payment Flow Flowchart (Vertical)</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            background-color: #FFFFFF;
+            gap: 10px;
+        }
+
+        .step {
+            width: 220px;
+            height: 60px;
+            border: 2px solid #28A745;
+            background-color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333333;
+            font-size: 16px;
+            border-radius: 5px;
+            padding: 0 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .connector {
+            width: 2px;
+            height: 30px;
+            background-color: #28A745;
+            position: relative;
+        }
+
+        .arrowhead {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid #28A745;
+        }
+
+        .note {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; padding-top: 20px;">Voice Payment Flow</h1>
+
+    <div class="flowchart" role="region" aria-label="Voice Payment Flowchart (Vertical)">
+        <div class="step" role="listitem" aria-label="Step 1: Voice Command">Voice Command</div>
+        <div class="connector"><div class="arrowhead"></div></div>
+        <div class="step" role="listitem" aria-label="Step 2: Authenticate with Voice or PIN">Authenticate (Voice/PIN)</div>
+        <div class="connector"><div class="arrowhead"></div></div>
+        <div class="step" role="listitem" aria-label="Step 3: Process Payment">Process Payment</div>
+        <div class="connector"><div class="arrowhead"></div></div>
+        <div class="step" role="listitem" aria-label="Step 4: Confirmation">Confirmation</div>
+    </div>
+
+    <div class="note" role="note" aria-label="Accessibility features">
+        Multilingual prompts, screen-reader support
+    </div>
+</body>
+</html>

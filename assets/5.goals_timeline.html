@@ -1,0 +1,62 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script>```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>YouPay Goals Timeline</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    svg { margin: 20px auto; display: block; }
+  </style>
+</head>
+<body>
+  <h1>YouPay Goals Timeline</h1>
+  <svg width="600" height="200">
+    <line x1="50" y1="100" x2="550" y2="100" stroke="black" stroke-width="2" />
+    <circle cx="150" cy="100" r="10" fill="#36A2EB" />
+    <text x="150" y="130" text-anchor="middle">2026: 1M Creators, 10M Transactions</text>
+    <circle cx="450" cy="100" r="10" fill="#FF6384" />
+    <text x="450" y="130" text-anchor="middle">2027: 10M Rural Users</text>
+  </svg>
+  <p>Figure 4: YouPay goals for 2026 and 2027.</p>
+</body>
+</html>
+```

@@ -1,0 +1,134 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revenue Sources for Product Management</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .chart-container {
+      width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    .chart-title {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      color: #333333;
+    }
+    .legend-title {
+      color: #ff0000; /* Red color for the legend title */
+      font-size: 18px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chart-container">
+    <h2 class="chart-title">Revenue Sources for Product Management</h2>
+    <div class="legend-title">Revenue Sources</div> <!-- Red legend title at top -->
+    <canvas id="revenueChart"></canvas>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Tipping', 'Subscriptions', 'Transaction Fees', 'Ads'],
+        datasets: [{
+          label: 'Revenue Sources',
+          data: [60, 30, 10, 2],
+          backgroundColor: ['#ff4040', '#40a0ff', '#ffd700', '#00cc00'],
+          borderColor: ['#cc0000', '#0066cc', '#cc9900', '#009900'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 60,
+            title: {
+              display: true,
+              text: 'Percentage of Revenue (%)'
+            },
+            ticks: {
+              stepSize: 10
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Revenue Sources'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              generateLabels: function(chart) {
+                return [{
+                  text: 'Revenue Sources',
+                  fillStyle: '#ff0000', // Red color for legend item
+                  strokeStyle: '#ff0000',
+                  lineWidth: 1,
+                  hidden: false,
+                  datasetIndex: 0
+                }];
+              }
+            }
+          },
+          title: {
+            display: true,
+            text: 'Revenue Sources for Product Management'
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

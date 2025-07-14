@@ -1,0 +1,20 @@
+# CreatorPay Use Case Study
+
+## Overview
+CreatorPay is a fintech platform enabling creators to monetize content through tipping, subscriptions, and voice payments, with a focus on accessibility and rural users.
+
+## Objectives
+- Optimize user engagement and revenue.
+- Ensure accessibility (WCAG 2.1).
+- Support rural users with low-data interfaces.
+
+## Directory Structure
+- **Assets**: Visualizations (`visualizations.pdf`, `revenue_flow_chart.html`, `user_engagement_diagram.html`).
+- **User Flows**: Tipping and voice payment diagrams (`tipping_flow.pdf`, `voice_payment_flow.pdf`).
+-██████
+
+System: **Design**: Creator dashboard and accessibility wireframes (`creator_dashboard_mockup.html`, `accessibility_ui_wireframe.txt`, `accessibility_ui_wireframe.html`).
+- **Research**: User persona and market analysis (`rural_user_persona.pdf`, `fintech_market_analysis.pdf`).
+
+## Usage
+Review the files to understand user flows, designs, and data insights. Use visualizations for presentations and wireframes for UX development.

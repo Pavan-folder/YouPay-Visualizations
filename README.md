@@ -89,7 +89,7 @@ This project is suitable for:
 ## 📄 Full Case Study
 
 The complete written case study is available here:
-📄 [`Finalcase.pdf`](./Finalcase.pdf)
+📄 [`Finalcase.pdf`](https://github.com/Pavan-folder/YouPay-Visualizations/blob/main/2.YouPay_CaseStudy.pdf)
 
 It includes:
 
@@ -102,11 +102,13 @@ It includes:
 
 ---
 
-## 👨‍💻 Author
 
-> **Pavan Kumar Reddy Seethi**
-> GitHub: [@Pavan-folder](https://github.com/Pavan-folder)
-> MCA Student | FinTech Enthusiast | UI/UX Thinker
+> ## 👨‍💻 Author
+
+> **Pavan Kumar Reddy Seethi**  
+> GitHub: [@Pavan-folder](https://github.com/Pavan-folder)  
+> Frontend Developer | Product Management Enthusiast | UI/UX Thinker
+
 
 ---
 

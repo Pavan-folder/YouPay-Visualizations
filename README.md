@@ -52,11 +52,11 @@ This project is suitable for:
 
 ## 🧩 Interactive Prototypes
 
-* [`revenue_flow_chart.html`](./assets/revenue_flow_chart.html) – Animated revenue flow
-* [`upi_growth_chart.html`](./assets/upi_growth_chart.html) – Interactive UPI growth
-* [`user_engagement_diagram.html`](./assets/user_engagement_diagram.html)
-* [`goals_timeline.html`](./assets/goals_timeline.html)
-* [`gtm_timeline.html`](./assets/gtm_timeline.html)
+* [`revenue_flow_chart.html`](https://github.com/Pavan-folder/YouPay-Visualizations/blob/main/assets/2.revenue_flow_chart.html) – Animated revenue flow
+* [`upi_growth_chart.html`](https://github.com/Pavan-folder/YouPay-Visualizations/blob/main/assets/4.upi_growth_chart.html) – Interactive UPI growth
+* [`user_engagement_diagram.html`](https://github.com/Pavan-folder/YouPay-Visualizations/blob/main/assets/3.user_engagement_diagram.html)
+* [`goals_timeline.html`](https://github.com/Pavan-folder/YouPay-Visualizations/blob/main/assets/5.goals_timeline.html)
+* [`gtm_timeline.html`](https://github.com/Pavan-folder/YouPay-Visualizations/blob/main/assets/7.gtm_timeline.html)
 
 ---
 
